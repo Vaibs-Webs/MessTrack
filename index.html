@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MessTrack - 60-Tiffin Digital Mess Card Tracker with Morning & Evening meal tracking, 40-day tracking period, and expense calculation.">
+    <title>MessTrack - 60-Tiffin Digital Mess Card</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation (Desktop) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">🍱</span>
+                    <span class="logo-text">MessTrack</span>
+                </div>
+                <button class="icon-btn close-sidebar-btn" id="close-sidebar-btn" aria-label="Close Menu">✕</button>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-link active" data-section="dashboard">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Dashboard</span>
+                </button>
+                <button class="nav-link" data-section="my-card">
+                    <span class="nav-icon">🍱</span>
+                    <span class="nav-label">My Card</span>
+                </button>
+                <button class="nav-link" data-section="history">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">History</span>
+                </button>
+                <button class="nav-link" data-section="add-card">
+                    <span class="nav-icon">➕</span>
+                    <span class="nav-label">+ New Card</span>
+                </button>
+                <button class="nav-link" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Settings</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="active-card-pill" id="sidebar-active-card-pill">
+                    <span class="pill-dot"></span>
+                    <span class="pill-text" id="sidebar-active-card-text">No Active Card</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Sidebar Backdrop for Mobile -->
+        <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Mobile Top Header -->
+            <header class="mobile-header">
+                <div class="logo">
+                    <span class="logo-icon">🍱</span>
+                    <span class="logo-text">MessTrack</span>
+                </div>
+                <div class="mobile-header-actions">
+                    <button class="theme-toggle-btn icon-btn" id="quick-theme-toggle" aria-label="Toggle Theme">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                    <button class="icon-btn hamburger-btn" id="hamburger-btn" aria-label="Open Navigation Menu">
+                        ☰
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content Container -->
+            <main class="main-content" id="main-content">
+
+                <!-- SECTION 1: DASHBOARD -->
+                <section class="section active" id="dashboard-section">
+                    <div class="section-header">
+                        <div>
+                            <h1 class="section-title">Dashboard</h1>
+                            <p class="section-subtitle" id="dashboard-subtitle">Active 60-Tiffin Card Overview</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="dash-quick-view-card-btn">
+                                🍱 View Digital Card
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Empty State for Dashboard (Shown when 0 cards exist) -->
+                    <div class="empty-state-card hidden" id="dashboard-empty-state">
+                        <div class="empty-state-icon">🍱</div>
+                        <h2>No Mess Card Yet</h2>
+                        <p>You don't have an active mess card. Create a new 40-day card with 60 tiffins to start tracking your meals.</p>
+                        <button class="btn btn-primary btn-lg create-card-btn">
+                            ➕ Create New Card
+                        </button>
+                    </div>
+
+                    <!-- Dashboard Active Card Content Wrapper -->
+                    <div id="dashboard-content-wrapper">
+                        <!-- Active Card Banner -->
+                        <div class="card month-banner-card" id="dashboard-banner">
+                            <div class="banner-info">
+                                <div class="flex items-center gap-2">
+                                    <span class="badge badge-primary" id="dash-status-badge">Active Card</span>
+                                    <span class="badge badge-secondary" id="dash-time-status-badge">40-Day Tracking Period</span>
+                                </div>
+                                <h2 class="banner-month-title" id="dash-card-period-title">14 Sep 2026 → 23 Oct 2026</h2>
+                                <p class="banner-dates" id="dash-card-days-info">Day 1 of 40 Calendar Days (39 Days Remaining)</p>
+                            </div>
+                            <div class="banner-quick-stats">
+                                <div class="quick-stat">
+                                    <span class="qs-label">Amount Paid</span>
+                                    <span class="qs-value" id="dash-amount-paid">₹6,000</span>
+                                </div>
+                                <div class="quick-stat">
+                                    <span class="qs-label">Cost / Tiffin</span>
+                                    <span class="qs-value" id="dash-cost-per-check">₹100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stat Grid -->
+                        <div class="stat-grid">
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <span class="stat-title">TOTAL TIFFINS</span>
+                                    <span class="stat-icon icon-total">🍱</span>
+                                </div>
+                                <div class="stat-value" id="dash-stat-total">60</div>
+                                <div class="stat-desc">Total Tiffin Quota</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <span class="stat-title">TIFFINS USED</span>
+                                    <span class="stat-icon icon-used">✓</span>
+                                </div>
+                                <div class="stat-value stat-used" id="dash-stat-used">42</div>
+                                <div class="stat-desc" id="dash-stat-used-pct">70% consumed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <span class="stat-title">TIFFINS REMAINING</span>
+                                    <span class="stat-icon icon-remaining">○</span>
+                                </div>
+                                <div class="stat-value stat-remaining" id="dash-stat-remaining">18</div>
+                                <div class="stat-desc" id="dash-stat-remaining-pct">30% balance</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-header">
+                                    <span class="stat-title">FEAST EVENTS</span>
+                                    <span class="stat-icon icon-missed">🔥</span>
+                                </div>
+                                <div class="stat-value text-amber" id="dash-stat-feasts">5</div>
+                                <div class="stat-desc" id="dash-stat-feasts-desc">Feasts (2 Tiffins Each)</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar Section -->
+                        <div class="card progress-card">
+                            <div class="progress-header">
+                                <div>
+                                    <h3 class="card-title">Tiffin Quota Usage</h3>
+                                    <p class="card-subtitle" id="dash-progress-sub">42 / 60 Tiffins Consumed</p>
+                                </div>
+                                <span class="progress-badge" id="dash-progress-pct">70%</span>
+                            </div>
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" id="dash-progress-fill" style="width: 70%;"></div>
+                            </div>
+                            <div class="breakdown-pills">
+                                <span class="breakdown-pill">✓ <strong id="dash-cnt-normal">32</strong> Normal Tiffins (1 tiffin)</span>
+                                <span class="breakdown-pill pill-warning">🔥 <strong id="dash-cnt-feasts">5</strong> Feasts (2 tiffins)</span>
+                                <span class="breakdown-pill pill-info">— <strong id="dash-cnt-notiffin">15</strong> No-Tiffin Periods (0 tiffins)</span>
+                                <span class="breakdown-pill pill-secondary">📊 <strong id="dash-cnt-total-events">37</strong> Total Active Meal Events</span>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Dual Grid -->
+                        <div class="dashboard-dual-grid">
+                            <!-- Recent Activity -->
+                            <div class="card activity-card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Recent Meal Activity</h3>
+                                    <span class="text-muted text-sm">Latest entries</span>
+                                </div>
+                                <div class="activity-list" id="dashboard-activity-list">
+                                    <!-- Dynamic activity items -->
+                                </div>
+                            </div>
+
+                            <!-- All-Time Overall Stats -->
+                            <div class="card alltime-card">
+                                <div class="card-header">
+                                    <h3 class="card-title">All Cards Overview</h3>
+                                    <span class="badge badge-secondary" id="alltime-card-count">1 Card</span>
+                                </div>
+                                <div class="alltime-grid">
+                                    <div class="alltime-stat">
+                                        <span class="at-val" id="at-total-checks">60</span>
+                                        <span class="at-lbl">Total Tiffins</span>
+                                    </div>
+                                    <div class="alltime-stat">
+                                        <span class="at-val text-success" id="at-used-checks">42</span>
+                                        <span class="at-lbl">Total Used</span>
+                                    </div>
+                                    <div class="alltime-stat">
+                                        <span class="at-val text-amber" id="at-total-feasts">5</span>
+                                        <span class="at-lbl">Total Feasts</span>
+                                    </div>
+                                    <div class="alltime-stat">
+                                        <span class="at-val text-accent" id="at-remaining-checks">18</span>
+                                        <span class="at-lbl">Total Remaining</span>
+                                    </div>
+                                </div>
+                                <div class="alltime-spending">
+                                    <span class="spending-lbl">Total Amount Spent</span>
+                                    <span class="spending-val" id="at-total-spent">₹6,000</span>
+                                </div>
+
+                                <div class="monthly-chart-container">
+                                    <div class="chart-header">
+                                        <span class="chart-title">Card Usage Breakdown</span>
+                                    </div>
+                                    <div class="bar-chart" id="monthly-bar-chart">
+                                        <!-- Dynamic bars -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2: MY CARD -->
+                <section class="section" id="my-card-section">
+                    <div class="section-header my-card-header">
+                        <div>
+                            <h1 class="section-title">Digital 60-Tiffin Mess Card</h1>
+                            <p class="section-subtitle">Track Morning & Evening meals across your 40-day calendar timeline</p>
+                        </div>
+                        <div class="month-selector-wrapper" id="mycard-select-wrapper">
+                            <label for="card-select-dropdown" class="sr-only">Select Card</label>
+                            <select id="card-select-dropdown" class="form-control select-control">
+                                <!-- Dynamic card options -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Empty State for My Card (Shown when 0 cards exist) -->
+                    <div class="empty-state-card hidden" id="mycard-empty-state">
+                        <div class="empty-state-icon">🍱</div>
+                        <h2>No Active Card</h2>
+                        <p>Create a new 40-day card with 60 tiffins to start tracking your meals.</p>
+                        <button class="btn btn-primary btn-lg create-card-btn">
+                            ➕ Create New Card
+                        </button>
+                    </div>
+
+                    <!-- My Card Active Content Wrapper -->
+                    <div id="mycard-content-wrapper">
+                        <!-- Card Summary Box -->
+                        <div class="card mycard-summary-card">
+                            <div class="mycard-info-main">
+                                <div class="mycard-title-group">
+                                    <h2 class="mycard-month-name" id="card-display-period">14 Sep 2026 → 23 Oct 2026</h2>
+                                    <p class="mycard-notes" id="card-display-notes">40-Day Tracking Period</p>
+                                </div>
+                                <div class="mycard-badges">
+                                    <span class="pill-badge" id="card-pill-capacity">60 Tiffins Quota</span>
+                                    <span class="pill-badge pill-badge-success" id="card-pill-cost">₹6,000 Paid</span>
+                                </div>
+                            </div>
+
+                            <div class="mycard-stats-row">
+                                <div class="mc-stat">
+                                    <span class="mc-num text-success" id="card-stat-used">42</span>
+                                    <span class="mc-lbl">Tiffins Used</span>
+                                </div>
+                                <div class="mc-stat">
+                                    <span class="mc-num text-accent" id="card-stat-remaining">18</span>
+                                    <span class="mc-lbl">Tiffins Remaining</span>
+                                </div>
+                                <div class="mc-stat">
+                                    <span class="mc-num text-amber" id="card-stat-feasts-cnt">5</span>
+                                    <span class="mc-lbl">Feast Events</span>
+                                </div>
+                                <div class="mc-stat">
+                                    <span class="mc-num" id="card-stat-pct">70%</span>
+                                    <span class="mc-lbl">Used %</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 60-Tiffin Visual Grid Legend & Card -->
+                        <div class="card tiffin-legend-card">
+                            <div>
+                                <h3 class="card-title">60-Tiffin Visual Grid</h3>
+                                <p class="card-subtitle">Visual representation of 60 tiffins (#01 to #60)</p>
+                            </div>
+                            <div class="legend-items">
+                                <div class="legend-badge legend-available">
+                                    <span class="badge-icon">○</span>
+                                    <span class="badge-text" id="grid-lbl-available">Available (18)</span>
+                                </div>
+                                <div class="legend-badge legend-used">
+                                    <span class="badge-icon">✓</span>
+                                    <span class="badge-text" id="grid-lbl-used">Used (42)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card tiffin-grid-card">
+                            <div class="check-grid" id="check-grid-container">
+                                <!-- Dynamic 60 tiffins #01 to #60 -->
+                            </div>
+                        </div>
+
+                        <!-- 40-Day Calendar Timeline Header -->
+                        <div class="section-header" style="margin-top: 2rem; margin-bottom: 1rem;">
+                            <div>
+                                <h2 class="section-title" style="font-size: 1.35rem;">40-Day Calendar Timeline</h2>
+                                <p class="section-subtitle">Click any day card to log or edit Morning & Evening meal entries</p>
+                            </div>
+                        </div>
+
+                        <div class="calendar-timeline-grid" id="calendar-timeline-container">
+                            <!-- Dynamic 40 calendar day cards -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 3: HISTORY -->
+                <section class="section" id="history-section">
+                    <div class="section-header">
+                        <div>
+                            <h1 class="section-title">Mess Card History</h1>
+                            <p class="section-subtitle">Review previous 60-tiffin cards, completion dates, and spending</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary create-card-btn" id="history-add-card-btn">
+                                ➕ Create New Card
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Empty State for History (Shown when 0 cards exist) -->
+                    <div class="empty-state-card hidden" id="history-empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <h2>No Previous Cards</h2>
+                        <p>Create your first mess card to start building your history.</p>
+                        <button class="btn btn-primary btn-lg create-card-btn">
+                            ➕ Create New Card
+                        </button>
+                    </div>
+
+                    <div class="history-list" id="history-list-container">
+                        <!-- Dynamic history cards -->
+                    </div>
+                </section>
+
+                <!-- SECTION 4: ADD CARD -->
+                <section class="section" id="add-card-section">
+                    <div class="section-header">
+                        <div>
+                            <h1 class="section-title">Create New 60-Tiffin Mess Card</h1>
+                            <p class="section-subtitle">Initialize a card with 60 tiffins total quota and a 40-day tracking period</p>
+                        </div>
+                    </div>
+
+                    <div class="card form-card">
+                        <form id="add-card-form" novalidate>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="add-start-date" class="form-label">Card Start Date <span class="required">*</span></label>
+                                    <input type="date" id="add-start-date" class="form-control" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="add-amount-input" class="form-label">Amount Paid (₹) <span class="required">*</span></label>
+                                    <input type="number" id="add-amount-input" class="form-control" min="0" step="1" value="6000" required placeholder="e.g. 6000">
+                                </div>
+                            </div>
+
+                            <div class="info-callout">
+                                <div class="callout-icon">💡</div>
+                                <div class="callout-content">
+                                    <strong>Mess Card Specifications:</strong>
+                                    <ul>
+                                        <li>Total Tiffin Quota: <strong>60 Tiffins</strong></li>
+                                        <li>Tracking Period: <strong>40 Calendar Days</strong> (End Date = Start Date + 39 days)</li>
+                                        <li>Every day has independent <strong>Morning</strong> & <strong>Evening</strong> meal slots</li>
+                                        <li>Choices: <strong>Normal (1 Tiffin)</strong>, <strong>Feast (2 Tiffins)</strong>, <strong>No Tiffin (0 Tiffins)</strong></li>
+                                        <li>Card is COMPLETED as soon as all 60 tiffins are consumed (even before Day 40)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width" style="margin-top: 1.25rem;">
+                                <label for="add-notes-input" class="form-label">Notes (Optional)</label>
+                                <textarea id="add-notes-input" class="form-control textarea-control" rows="3" placeholder="e.g., Vendor name, payment receipt #, mess contact details..."></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    ✨ Create 60-Tiffin Card
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="add-cancel-btn">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- SECTION 5: SETTINGS -->
+                <section class="section" id="settings-section">
+                    <div class="section-header">
+                        <div>
+                            <h1 class="section-title">Settings</h1>
+                            <p class="section-subtitle">Manage theme, preferences, backups, and data</p>
+                        </div>
+                    </div>
+
+                    <div class="settings-grid">
+                        <div class="card settings-card">
+                            <h3 class="card-title">Appearance</h3>
+                            <p class="card-subtitle">Choose your preferred visual theme</p>
+                            
+                            <div class="theme-options">
+                                <label class="theme-option-card" for="theme-light">
+                                    <input type="radio" name="theme-choice" id="theme-light" value="light" checked>
+                                    <div class="theme-box light-preview">
+                                        <span class="preview-icon">☀️</span>
+                                        <span class="preview-label">Light Theme</span>
+                                    </div>
+                                </label>
+
+                                <label class="theme-option-card" for="theme-dark">
+                                    <input type="radio" name="theme-choice" id="theme-dark" value="dark">
+                                    <div class="theme-box dark-preview">
+                                        <span class="preview-icon">🌙</span>
+                                        <span class="preview-label">Dark Theme</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="card settings-card">
+                            <h3 class="card-title">System Rules</h3>
+                            <p class="card-subtitle">Card rules and storage configuration</p>
+                            
+                            <div class="form-group">
+                                <label for="settings-rules" class="form-label">Tiffin Deduction Rules</label>
+                                <input type="text" id="settings-rules" class="form-control" value="Normal = 1 Tiffin | Feast = 2 Tiffins | No Tiffin = 0 Tiffins" readonly disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="settings-storage" class="form-label">Storage Location</label>
+                                <input type="text" id="settings-storage" class="form-control" value="Local Browser Storage (Client-Side)" readonly disabled>
+                            </div>
+                        </div>
+
+                        <div class="card settings-card full-width-card">
+                            <h3 class="card-title">Data Backup & Restore</h3>
+                            <p class="card-subtitle">Export your records to JSON file or import a previous backup</p>
+                            
+                            <div class="backup-actions">
+                                <div class="action-box">
+                                    <h4>Export Backup</h4>
+                                    <p>Download a complete JSON backup file containing all 60-tiffin cards, Morning/Evening entries, and history.</p>
+                                    <button class="btn btn-primary" id="export-backup-btn">
+                                        📥 Export Backup (.json)
+                                    </button>
+                                </div>
+
+                                <div class="action-box">
+                                    <h4>Import Backup</h4>
+                                    <p>Restore your MessTrack records from an existing backup JSON file.</p>
+                                    <input type="file" id="import-file-input" accept=".json" class="sr-only">
+                                    <button class="btn btn-secondary" id="import-backup-btn">
+                                        📤 Select Backup File
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card settings-card danger-card full-width-card">
+                            <h3 class="card-title text-danger">Danger Zone</h3>
+                            <p class="card-subtitle">Permanently erase all application data</p>
+                            
+                            <div class="danger-box">
+                                <div>
+                                    <h4>Clear All MessTrack Data</h4>
+                                    <p>This action will permanently delete all 60-tiffin cards and history from this browser. This cannot be undone.</p>
+                                </div>
+                                <button class="btn btn-danger" id="clear-all-data-btn">
+                                    🗑️ Clear All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL 1: DAY EVENT MODAL -->
+    <div class="modal-overlay hidden" id="day-event-modal" role="dialog" aria-modal="true" aria-labelledby="day-modal-title">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="day-modal-title">14 September 2026</h3>
+                    <p class="modal-subtitle" id="day-modal-sub">Monday (Day 1 of 40)</p>
+                </div>
+                <button class="icon-btn modal-close-btn" id="close-day-modal" aria-label="Close modal">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="meal-section-card">
+                    <div class="meal-section-header">
+                        <span class="meal-title">☀ MORNING TIFFIN</span>
+                        <span class="meal-status-pill" id="day-modal-morning-pill">Normal — 1 Tiffin</span>
+                    </div>
+
+                    <div class="meal-options-row">
+                        <button class="meal-opt-btn" data-time="morning" data-type="normal">
+                            <span class="m-icon">✓</span>
+                            <span>Normal (1)</span>
+                        </button>
+
+                        <button class="meal-opt-btn btn-feast-opt" data-time="morning" data-type="feast">
+                            <span class="m-icon">🔥</span>
+                            <span>Feast (2)</span>
+                        </button>
+
+                        <button class="meal-opt-btn btn-notiffin-opt" data-time="morning" data-type="no_tiffin">
+                            <span class="m-icon">—</span>
+                            <span>No Tiffin (0)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="meal-section-card" style="margin-top: 1rem;">
+                    <div class="meal-section-header">
+                        <span class="meal-title">🌙 EVENING TIFFIN</span>
+                        <span class="meal-status-pill" id="day-modal-evening-pill">No Tiffin — 0 Tiffins</span>
+                    </div>
+
+                    <div class="meal-options-row">
+                        <button class="meal-opt-btn" data-time="evening" data-type="normal">
+                            <span class="m-icon">✓</span>
+                            <span>Normal (1)</span>
+                        </button>
+
+                        <button class="meal-opt-btn btn-feast-opt" data-time="evening" data-type="feast">
+                            <span class="m-icon">🔥</span>
+                            <span>Feast (2)</span>
+                        </button>
+
+                        <button class="meal-opt-btn btn-notiffin-opt" data-time="evening" data-type="no_tiffin">
+                            <span class="m-icon">—</span>
+                            <span>No Tiffin (0)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="day-total-summary-box" style="margin-top: 1.25rem;">
+                    <span>Total Tiffins Consumed Today:</span>
+                    <strong id="day-modal-total-checks-text">1 Tiffin</strong>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary full-width-btn" id="cancel-day-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CONFIRMATION DIALOG MODAL -->
+    <div class="modal-overlay hidden" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirm-modal-title">Confirm Action</h3>
+                <button class="icon-btn modal-close-btn" id="close-confirm-modal" aria-label="Close modal">✕</button>
+            </div>
+            
+            <div class="modal-body">
+                <p class="confirm-message" id="confirm-modal-message">Are you sure you want to perform this action?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="confirm-modal-action-btn">Confirm</button>
+                <button class="btn btn-secondary" id="confirm-modal-cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
